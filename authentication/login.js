@@ -12,44 +12,35 @@ const { config } = require("../config/config");
 const { generateAccessToken, authenticateToken } = require("./auth");
 const { generateAccessTokenApp } = require("../middleware/appAuthorize");
 
-auth.post("/login", async (req, res) => {
+auth.post("/usp_RIT_LoginWithOTP", async (req, res) => {
 	try {
-		const { user_name } = req.body;
-		// if (!user_name) {
-		//   res.status(400).json({
-		//     status: 400,
-		//     message: "Mobile number is required",
-		//   });
-		// }
+		const { user_id, mobile, otp } = req.body;
 
 		await sql
 			.connect(config)
 			.then((pool) => {
 				return pool
 					.request()
-					.input("mobile_email", user_name)
-					.execute("check_login");
+					.input("Mobile", mobile)
+					.input("OTP", otp)
+					.input("UserID", user_id)
+					.execute("usp_RIT_LoginWithOTP");
 			})
 			.then((result) => {
+				console.log('LOGIN 🏬🏬 ', result);
 				if (result.recordset.length > 0) {
-					sendEmail(
-						result.recordset[0].otp,
-						"Brij ERP Login Otp",
-						result.recordset[0].email
-					);
-					sendWhatsapp(
-						result.recordset[0].otp,
-						result.recordset[0].mobile,
-						result.recordset[0].full_name
-					);
+					const token = generateAccessToken({
+						user: result.recordset[0],
+					});					
 					res.status(200).json({
 						status: 200,
 						valid: true,
+						token: token,
 					});
 				} else {
 					res.status(200).json({
 						status: 400,
-						message: "This mobile no. or email is not exist",
+						message: "This Mobile No. Does Not Exist",
 					});
 				}
 			})
