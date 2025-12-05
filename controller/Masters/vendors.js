@@ -2,7 +2,7 @@ const sql = require("mssql");
 const { config } = require("../../config/config");
 const asyncHandler = require("express-async-handler");
 
-exports.usp_Brand_Browse = asyncHandler(async (req, res) => {
+exports.usp_Vendor_Browse = asyncHandler(async (req, res) => {
 	try {
 		await sql
 			.connect(config)
@@ -10,9 +10,10 @@ exports.usp_Brand_Browse = asyncHandler(async (req, res) => {
 				return pool
 					.request()
 					.input("SearchTerm", req.body.filter_value)
-					.execute("usp_Brand_Browse");
+					.execute("usp_Vendor_Browse");
 			})
 			.then((result) => {
+				console.log("usp_Vendor_Browse ✅✅ => ", result);
 				res.send({
 					status: 200,
 					data: result.recordset,
@@ -20,7 +21,7 @@ exports.usp_Brand_Browse = asyncHandler(async (req, res) => {
 				});
 			})
 			.catch((err) => {
-				console.log("usp_Brand_Browse ❌❌ => ", err);
+				console.log("usp_Vendor_Browse ❌❌ => ", err);
 				res.send({
 					status: 400,
 					message: err,
@@ -34,21 +35,23 @@ exports.usp_Brand_Browse = asyncHandler(async (req, res) => {
 	}
 });
 
-exports.usp_Brand_Save = asyncHandler(async (req, res) => {
+exports.usp_Vendor_Save = asyncHandler(async (req, res) => {
 	try {
 		await sql
 			.connect(config)
 			.then((pool) => {
 				return pool
 					.request()
-					.input("BrandID", req.body.brand_id)
-					.input("BrandName", req.body.brand_name)
-					.input("BrandCode", req.body.brand_code)
-					.input("Description", req.body.description)
+					.input("ISPID", req.body.isp_id)
+					.input("ISPName", req.body.isp_name)
+					.input("ShortCode", req.body.short_code)
+					.input("Website", req.body.website)
+					.input("Remarks", req.body.remarks)
 					.input("IsActive", req.body.isActive)
-					.execute("usp_Brand_Save");
+					.execute("usp_Vendor_Save");
 			})
 			.then((result) => {
+				console.log("usp_Vendor_Save ✅✅ => ", result);
 				res.send({
 					status: 200,
 					data: result.recordset[0],
@@ -56,7 +59,7 @@ exports.usp_Brand_Save = asyncHandler(async (req, res) => {
 				});
 			})
 			.catch((err) => {
-				console.log("usp_Brand_Save ❌❌ => ", err);
+				console.log("usp_Vendor_Save ❌❌ => ", err);
 				res.send({
 					status: 400,
 					message: err,
@@ -70,17 +73,18 @@ exports.usp_Brand_Save = asyncHandler(async (req, res) => {
 	}
 });
 
-exports.usp_Brand_Preview = asyncHandler(async (req, res) => {
+exports.usp_Vendor_Preview = asyncHandler(async (req, res) => {
 	try {
 		await sql
 			.connect(config)
 			.then((pool) => {
 				return pool
 					.request()
-					.input("BrandID", req.body.brand_id)
-					.execute("usp_Brand_Preview");
+					.input("ISPID", req.body.isp_id)
+					.execute("usp_Vendor_Preview");
 			})
 			.then((result) => {
+				console.log("usp_Vendor_Preview ✅✅ => ", result);
 				res.send({
 					status: 200,
 					data: result.recordset[0],
@@ -88,7 +92,7 @@ exports.usp_Brand_Preview = asyncHandler(async (req, res) => {
 				});
 			})
 			.catch((err) => {
-				console.log("usp_Brand_Preview ❌❌ => ", err);
+				console.log("usp_Vendor_Preview ❌❌ => ", err);
 				res.send({
 					status: 400,
 					message: err,
@@ -102,18 +106,18 @@ exports.usp_Brand_Preview = asyncHandler(async (req, res) => {
 	}
 });
 
-exports.usp_Brand_Delete = asyncHandler(async (req, res) => {
+exports.usp_Vendor_Delete = asyncHandler(async (req, res) => {
 	try {
 		await sql
 			.connect(config)
 			.then((pool) => {
 				return pool
 					.request()
-					.input("BrandID", req.body.brand_id)
-					.execute("usp_Brand_Delete");
+					.input("ISPID", req.body.isp_id)
+					.execute("usp_Vendor_Delete");
 			})
 			.then((result) => {
-				console.log("usp_Brand_Delete ✅✅ => ", result);
+				console.log("usp_Vendor_Delete ✅✅ => ", result);
 				res.send({
 					status: 200,
 					message: "Brand deleted successfully",
@@ -121,7 +125,7 @@ exports.usp_Brand_Delete = asyncHandler(async (req, res) => {
 				});
 			})
 			.catch((err) => {
-				console.log("usp_Brand_Delete ❌❌ => ", err);
+				console.log("usp_Vendor_Delete ❌❌ => ", err);
 				res.send({
 					status: 400,
 					message: err,

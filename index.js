@@ -3,46 +3,18 @@ const app = express();
 const cors = require("cors");
 
 const { auth } = require("./authentication/login");
-const { FabricRoute } = require("./routes/settings/fabric");
-const { UOMRoute } = require("./routes/settings/uom");
-const { ColorRoute } = require("./routes/settings/color");
-const { MillRoute } = require("./routes/settings/mill");
-const { BlendRoute } = require("./routes/settings/blend");
-const { FinishNameRoute } = require("./routes/settings/finishName");
-const { ItemNameRoute } = require("./routes/settings/itemName");
-const { KnittedTypeRoute } = require("./routes/settings/knittedType");
-const { TrimTypeRoute } = require("./routes/settings/trimType");
-const { ProductUsageRoute } = require("./routes/settings/productUsage");
-const { MakeBrandRoute } = require("./routes/settings/makeBrand");
-const { DyeingRoute } = require("./routes/settings/dyeing");
-const { IndustryTypeRoute } = require("./routes/settings/industryType");
-const { DesignationRoute } = require("./routes/settings/designation");
-const { DepartmentRoute } = require("./routes/settings/department");
-const { PincodeRoute } = require("./routes/settings/pincode");
 const { common } = require("./routes/common");
 const { masterUsersRoutes } = require("./routes/masters/users");
-const {
-	AccessoriesSubCategories,
-} = require("./routes/settings/AccessoriesSubCategories");
-const { SRFRoutes } = require("./routes/transactions/srf");
-const { ProductStyleRoute } = require("./routes/settings/productStyle");
-const { BOMRoute } = require("./routes/settings/BomCharges");
-const { BOMRoutes } = require("./routes/transactions/Bom");
-const { QrRoutes } = require("./routes/transactions/QrCode");
 const {
 	writeSrfDraft,
 	getSrfDraftData,
 	deleteDraftData,
 } = require("./controller/draft/srf");
 const { authenticateToken } = require("./authentication/auth");
-const { RGPRoutes } = require("./routes/transactions/RGP");
-const { RRGPRoutes } = require("./routes/transactions/RRGP");
-const { JSRoutes } = require("./routes/transactions/JobSheet");
 const { AppQRCode } = require("./routes/AppQrCode/qrCode");
-const { ItemCategory } = require("./routes/settings/itemCategory");
 const { userRightsRoutes } = require("./routes/userRights/userRights");
-const { NotifiationRoutes } = require("./routes/transactions/Notification");
 const { masterBrandsRoutes } = require("./routes/masters/brands");
+const { masterISPRoutes } = require("./routes/masters/isp");
 
 require("dotenv").config();
 
@@ -57,48 +29,16 @@ app.get("/", (req, res) => {
 // api routess
 
 app.use("/auth", auth);
-app.use("/masters", masterUsersRoutes, masterBrandsRoutes);
+app.use("/masters", masterUsersRoutes, masterBrandsRoutes, masterISPRoutes);
 
-app.use(
-	"/settings",
-	FabricRoute,
-	UOMRoute,
-	ColorRoute,
-	MillRoute,
-	BlendRoute,
-	FinishNameRoute,
-	ItemNameRoute,
-	KnittedTypeRoute,
-	TrimTypeRoute,
-	ProductUsageRoute,
-	MakeBrandRoute,
-	DyeingRoute,
-	IndustryTypeRoute,
-	DesignationRoute,
-	DepartmentRoute,
-	PincodeRoute,
-	AccessoriesSubCategories,
-	ProductStyleRoute,
-	BOMRoute,
-	ItemCategory
-);
-app.use(
-	"/transactions",
-	SRFRoutes,
-	BOMRoutes,
-	QrRoutes,
-	RGPRoutes,
-	RRGPRoutes,
-	JSRoutes,
-	NotifiationRoutes
-);
+
 app.use("/userRights", userRightsRoutes);
 app.post("/api/draft_insert", authenticateToken, writeSrfDraft);
 app.post("/api/draft_delete", authenticateToken, deleteDraftData);
 app.get("/api/draft_get", authenticateToken, getSrfDraftData);
 app.use("/common", common);
 app.use("/AppQrCode", AppQRCode);
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 1234;
 app.listen(port, () => {
 	console.log(`Server is running on ${port}`);
 });
