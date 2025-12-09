@@ -12,27 +12,29 @@ exports.usp_RIT_BrowseUsers = asyncHandler(async (req, res) => {
 				return pool
 					.request()
 					.input("SearchTerm", req.body.filter_value)
-					.input("SortColumn", req.body.sort_column)
-					.input("SortDirection", req.body.sort_direction)
-					.input("PageNumber", req.query.page_number)
-					.input("PageSize", req.body.page_size)
+					// .input("SortColumn", req.body.sort_column)
+					// .input("SortDirection", req.body.sort_direction)
+					// .input("PageNumber", req.query.page_number)
+					// .input("PageSize", req.body.page_size)
 					.execute("usp_RIT_BrowseUsers");
 			})
 			.then((result) => {
-				const data =
-					result.recordset.length > 0
-						? filterData(result.recordset, filter)
-						: [];
+				console.log('USER BROWSE', result)
+				// const data =
+				// result.recordset.length > 0
+				// ? filterData(result.recordset, filter)
+				// 		: [];
 
 				res.send({
 					status: 200,
-					data: data,
+					data: result.recordset,
 					valid: true,
 					excelRecord: result.recordset,
 					totalRecords: result.recordset.length,
 				});
 			})
 			.catch((err) => {
+				console.log('ERROR', err)
 				res.send({
 					status: 400,
 					message: err,
@@ -46,6 +48,48 @@ exports.usp_RIT_BrowseUsers = asyncHandler(async (req, res) => {
 	}
 });
 
+
+exports.usp_RIT_InsertOrUpdateUser = asyncHandler(async (req, res) => {
+	try {
+		await sql
+			.connect(config)
+			.then((pool) => {
+				return pool
+					.request()
+					.input("UserID", req.body.user_id)
+					.input("Name", req.body.name)
+					.input("Address", req.body.address)
+					.input("City", req.body.city)
+					.input("State", req.body.state)
+					.input("Country", req.body.country)
+					.input("Mobile", req.body.mobile)
+					.input("Email", req.body.email)
+					.input("UserType", req.body.userType)
+					.input("PasswordHash", req.body.passwordHash)
+					.input("CreatedBy", 1)
+					.execute("usp_RIT_InsertOrUpdateUser");
+			})
+			.then((result) => {
+				res.send({
+					status: 200,
+					data: result.recordset[0],
+					valid: true,
+				});
+			})
+			.catch((err) => {
+				console.log("usp_Brand_Save ❌❌ => ", err);
+				res.send({
+					status: 400,
+					message: err,
+				});
+			});
+	} catch (error) {
+		res.status(500).send({
+			status: 500,
+			message: error,
+		});
+	}
+});
 
 
 

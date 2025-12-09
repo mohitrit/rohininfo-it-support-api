@@ -2,7 +2,7 @@ const sql = require("mssql");
 const { config } = require("../../config/config");
 const asyncHandler = require("express-async-handler");
 
-exports.usp_Vendor_Browse = asyncHandler(async (req, res) => {
+exports.usp_PIN_Browse = asyncHandler(async (req, res) => {
 	try {
 		await sql
 			.connect(config)
@@ -10,10 +10,10 @@ exports.usp_Vendor_Browse = asyncHandler(async (req, res) => {
 				return pool
 					.request()
 					.input("SearchTerm", req.body.filter_value)
-					.execute("usp_Vendor_Browse");
+					.execute("usp_PIN_Browse");
 			})
 			.then((result) => {
-				console.log("usp_Vendor_Browse ✅✅ => ", result);
+				console.log("usp_PIN_Browse ✅✅ => ", result);
 				res.send({
 					status: 200,
 					data: result.recordset,
@@ -21,7 +21,7 @@ exports.usp_Vendor_Browse = asyncHandler(async (req, res) => {
 				});
 			})
 			.catch((err) => {
-				console.log("usp_Vendor_Browse ❌❌ => ", err);
+				console.log("usp_PIN_Browse ❌❌ => ", err);
 				res.send({
 					status: 400,
 					message: err,
@@ -35,28 +35,23 @@ exports.usp_Vendor_Browse = asyncHandler(async (req, res) => {
 	}
 });
 
-exports.usp_Vendor_Save = asyncHandler(async (req, res) => {
+exports.usp_PIN_Save = asyncHandler(async (req, res) => {
 	try {
 		await sql
 			.connect(config)
 			.then((pool) => {
 				return pool
 					.request()
-					.input("VendorID", req.body.vendor_id)
-					.input("VendorName", req.body.vendor_name)
-					.input("ISPID", req.body.isp_id)
-					.input("ContactPerson", req.body.contact_person)
-					.input("Mobile", req.body.mobile)
-					.input("Email", req.body.email)
 					.input("PinID", req.body.pin_id)
-					.input("City", req.body.city)
+					.input("Pin", req.body.pin)
 					.input("State", req.body.state)
-					.input("Address", req.body.address)
+					.input("District", req.body.district)
+					.input("City", req.body.city)
 					.input("IsActive", req.body.isActive)
-					.execute("usp_Vendor_Save");
+					.execute("usp_PIN_Save");
 			})
 			.then((result) => {
-				console.log("usp_Vendor_Save ✅✅ => ", result);
+				console.log("usp_PIN_Save ✅✅ => ", result);
 				res.send({
 					status: 200,
 					data: result.recordset[0],
@@ -64,7 +59,7 @@ exports.usp_Vendor_Save = asyncHandler(async (req, res) => {
 				});
 			})
 			.catch((err) => {
-				console.log("usp_Vendor_Save ❌❌ => ", err);
+				console.log("usp_PIN_Save ❌❌ => ", err);
 				res.send({
 					status: 400,
 					message: err,
@@ -78,18 +73,18 @@ exports.usp_Vendor_Save = asyncHandler(async (req, res) => {
 	}
 });
 
-exports.usp_Vendor_Preview = asyncHandler(async (req, res) => {
+exports.usp_PIN_Preview = asyncHandler(async (req, res) => {
 	try {
 		await sql
 			.connect(config)
 			.then((pool) => {
 				return pool
 					.request()
-					.input("VendorID", req.body.vendor_id)
-					.execute("usp_Vendor_Preview");
+					.input("PinID", req.body.pin_id)
+					.execute("usp_PIN_Preview");
 			})
 			.then((result) => {
-				console.log("usp_Vendor_Preview ✅✅ => ", result);
+				console.log("usp_PIN_Preview ✅✅ => ", result);
 				res.send({
 					status: 200,
 					data: result.recordset[0],
@@ -97,7 +92,7 @@ exports.usp_Vendor_Preview = asyncHandler(async (req, res) => {
 				});
 			})
 			.catch((err) => {
-				console.log("usp_Vendor_Preview ❌❌ => ", err);
+				console.log("usp_PIN_Preview ❌❌ => ", err);
 				res.send({
 					status: 400,
 					message: err,
@@ -111,18 +106,18 @@ exports.usp_Vendor_Preview = asyncHandler(async (req, res) => {
 	}
 });
 
-exports.usp_Vendor_Delete = asyncHandler(async (req, res) => {
+exports.usp_PIN_Delete = asyncHandler(async (req, res) => {
 	try {
 		await sql
 			.connect(config)
 			.then((pool) => {
 				return pool
 					.request()
-					.input("VendorID", req.body.vendor_id)
-					.execute("usp_Vendor_Delete");
+					.input("PinID", req.body.pin_id)
+					.execute("usp_PIN_Delete");
 			})
 			.then((result) => {
-				console.log("usp_Vendor_Delete ✅✅ => ", result);
+				console.log("usp_PIN_Delete ✅✅ => ", result);
 				res.send({
 					status: 200,
 					message: "Brand deleted successfully",
@@ -130,7 +125,7 @@ exports.usp_Vendor_Delete = asyncHandler(async (req, res) => {
 				});
 			})
 			.catch((err) => {
-				console.log("usp_Vendor_Delete ❌❌ => ", err);
+				console.log("usp_PIN_Delete ❌❌ => ", err);
 				res.send({
 					status: 400,
 					message: err,

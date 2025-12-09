@@ -15,6 +15,8 @@ const { AppQRCode } = require("./routes/AppQrCode/qrCode");
 const { userRightsRoutes } = require("./routes/userRights/userRights");
 const { masterBrandsRoutes } = require("./routes/masters/brands");
 const { masterISPRoutes } = require("./routes/masters/isp");
+const { masterVendorsRoutes } = require("./routes/masters/vendors");
+const { masterPinRoutes } = require("./routes/masters/pin");
 
 require("dotenv").config();
 
@@ -29,7 +31,7 @@ app.get("/", (req, res) => {
 // api routess
 
 app.use("/auth", auth);
-app.use("/masters", masterUsersRoutes, masterBrandsRoutes, masterISPRoutes);
+app.use("/masters", masterUsersRoutes, masterBrandsRoutes, masterISPRoutes, masterVendorsRoutes, masterPinRoutes);
 
 
 app.use("/userRights", userRightsRoutes);
