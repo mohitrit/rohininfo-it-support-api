@@ -18,6 +18,10 @@ const { masterISPRoutes } = require("./routes/masters/isp");
 const { masterVendorsRoutes } = require("./routes/masters/vendors");
 const { masterPinRoutes } = require("./routes/masters/pin");
 const { masterPaymentModeRoutes } = require("./routes/masters/paymentMode");
+const { masterStatusRoutes } = require("./routes/masters/status");
+const {
+  masterFeasibilityTypeRoutes,
+} = require("./routes/masters/feasibilitytype");
 
 require("dotenv").config();
 
@@ -38,8 +42,7 @@ app.use(
   masterBrandsRoutes,
   masterISPRoutes,
   masterVendorsRoutes,
-  masterPinRoutes,
-  masterPaymentModeRoutes
+  masterPinRoutes
 );
 
 app.use("/userRights", userRightsRoutes);
