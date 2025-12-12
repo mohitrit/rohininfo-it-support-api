@@ -17,6 +17,9 @@ const { masterBrandsRoutes } = require("./routes/masters/brands");
 const { masterISPRoutes } = require("./routes/masters/isp");
 const { masterVendorsRoutes } = require("./routes/masters/vendors");
 const { masterPinRoutes } = require("./routes/masters/pin");
+const { masterStatusRoutes } = require("./routes/masters/status");
+const { masterFeasibilityTypeRoutes } = require("./routes/masters/feasibilitytype");
+
 
 require("dotenv").config();
 
@@ -31,7 +34,7 @@ app.get("/", (req, res) => {
 // api routess
 
 app.use("/auth", auth);
-app.use("/masters", masterUsersRoutes, masterBrandsRoutes, masterISPRoutes, masterVendorsRoutes, masterPinRoutes);
+app.use("/masters", masterUsersRoutes, masterBrandsRoutes, masterISPRoutes, masterVendorsRoutes, masterPinRoutes,masterStatusRoutes,masterFeasibilityTypeRoutes);
 
 
 app.use("/userRights", userRightsRoutes);

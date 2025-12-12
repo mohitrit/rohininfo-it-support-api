@@ -19,14 +19,16 @@ auth.post("/usp_RIT_LoginWithOTP", async (req, res) => {
 		await sql
 			.connect(config)
 			.then((pool) => {
-				return pool
+                console.log("REQUEST DATA:", req.body);
+ 				return pool
 					.request()
 					.input("Mobile", mobile)
 					.input("OTP", otp)
-					.input("UserID", user_id)
+					.input("UserID", 20)
 					.execute("usp_RIT_LoginWithOTP");
 			})
 			.then((result) => {
+				console.log("OTP SENT TO DATABASE:", otp);
 				console.log('LOGIN 🏬🏬 ', result);
 				if (result.recordset.length > 0) {
 					const token = generateAccessToken({
@@ -45,6 +47,7 @@ auth.post("/usp_RIT_LoginWithOTP", async (req, res) => {
 				}
 			})
 			.catch((err) => {
+				console.log("err",err);
 				res.status(500).json({
 					status: 500,
 					message: err,
