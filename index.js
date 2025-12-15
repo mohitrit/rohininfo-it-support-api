@@ -42,7 +42,10 @@ app.use(
   masterBrandsRoutes,
   masterISPRoutes,
   masterVendorsRoutes,
-  masterPinRoutes
+  masterPinRoutes,
+  masterPaymentModeRoutes,
+  masterStatusRoutes,
+  masterFeasibilityTypeRoutes
 );
 
 app.use("/userRights", userRightsRoutes);
