@@ -2,7 +2,7 @@ const sql = require("mssql");
 const { config } = require("../../config/config");
 const asyncHandler = require("express-async-handler");
 
-exports.usp_PIN_Browse = asyncHandler(async (req, res) => {
+exports.usp_PaymentMode_Browse = asyncHandler(async (req, res) => {
   try {
     await sql
       .connect(config)
@@ -10,10 +10,9 @@ exports.usp_PIN_Browse = asyncHandler(async (req, res) => {
         return pool
           .request()
           .input("SearchTerm", req.body.filter_value)
-          .execute("usp_PIN_Browse");
+          .execute("usp_PaymentMode_Browse");
       })
       .then((result) => {
-        console.log("usp_PIN_Browse ✅✅ => ", result);
         res.send({
           status: 200,
           data: result.recordset,
@@ -21,7 +20,7 @@ exports.usp_PIN_Browse = asyncHandler(async (req, res) => {
         });
       })
       .catch((err) => {
-        console.log("usp_PIN_Browse ❌❌ => ", err);
+        console.log("usp_PaymentMode_Browse ❌❌ => ", err);
         res.send({
           status: 400,
           message: err,
@@ -35,23 +34,22 @@ exports.usp_PIN_Browse = asyncHandler(async (req, res) => {
   }
 });
 
-exports.usp_PIN_Save = asyncHandler(async (req, res) => {
+exports.usp_PaymentMode_Save = asyncHandler(async (req, res) => {
   try {
     await sql
       .connect(config)
       .then((pool) => {
         return pool
           .request()
-          .input("PinID", req.body.pin_id)
-          .input("PIN", req.body.pin)
-          .input("State", req.body.state)
-          .input("District", req.body.district)
-          .input("City", req.body.city)
+          .input("PaymentModeID", req.body.payment_mode_id)
+          .input("PaymentMode", req.body.payment_mode)
+          .input("Description", req.body.description)
           .input("IsActive", req.body.isActive)
-          .execute("usp_PIN_Save");
+          .input("IsOnline", req.body.IsOnline)
+          .input("CreatedBy", req.body.user_id)
+          .execute("usp_PaymentMode_Save");
       })
       .then((result) => {
-        console.log("usp_PIN_Save ✅✅ => ", result);
         res.send({
           status: 200,
           data: result.recordset[0],
@@ -59,7 +57,7 @@ exports.usp_PIN_Save = asyncHandler(async (req, res) => {
         });
       })
       .catch((err) => {
-        console.log("usp_PIN_Save ❌❌ => ", err);
+        console.log("usp_PaymentMode_Save ❌❌ => ", err);
         res.send({
           status: 400,
           message: err,
@@ -73,18 +71,17 @@ exports.usp_PIN_Save = asyncHandler(async (req, res) => {
   }
 });
 
-exports.usp_PIN_Preview = asyncHandler(async (req, res) => {
+exports.usp_PaymentMode_Preview = asyncHandler(async (req, res) => {
   try {
     await sql
       .connect(config)
       .then((pool) => {
         return pool
           .request()
-          .input("PinID", req.body.pin_id)
-          .execute("usp_PIN_Preview");
+          .input("PaymentModeID", req.body.payment_mode_id)
+          .execute("usp_PaymentMode_Preview");
       })
       .then((result) => {
-        console.log("usp_PIN_Preview ✅✅ => ", result);
         res.send({
           status: 200,
           data: result.recordset[0],
@@ -92,7 +89,7 @@ exports.usp_PIN_Preview = asyncHandler(async (req, res) => {
         });
       })
       .catch((err) => {
-        console.log("usp_PIN_Preview ❌❌ => ", err);
+        console.log("usp_PaymentMode_Preview ❌❌ => ", err);
         res.send({
           status: 400,
           message: err,
@@ -106,26 +103,26 @@ exports.usp_PIN_Preview = asyncHandler(async (req, res) => {
   }
 });
 
-exports.usp_PIN_Delete = asyncHandler(async (req, res) => {
+exports.usp_PaymentMode_Delete = asyncHandler(async (req, res) => {
   try {
     await sql
       .connect(config)
       .then((pool) => {
         return pool
           .request()
-          .input("PinID", req.body.pin_id)
-          .execute("usp_PIN_Delete");
+          .input("PaymentModeID", req.body.payment_mode_id)
+          .execute("usp_PaymentMode_Delete");
       })
       .then((result) => {
-        console.log("usp_PIN_Delete ✅✅ => ", result);
+        console.log("usp_PaymentMode_Delete ✅✅ => ", result);
         res.send({
           status: 200,
-          message: "Pin deleted successfully",
+          message: "Payment Mode deleted successfully",
           valid: true,
         });
       })
       .catch((err) => {
-        console.log("usp_PIN_Delete ❌❌ => ", err);
+        console.log("usp_PaymentMode_Delete ❌❌ => ", err);
         res.send({
           status: 400,
           message: err,
