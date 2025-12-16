@@ -23,7 +23,7 @@ const {
   masterFeasibilityTypeRoutes,
 } = require("./routes/masters/feasibilitytype");
 //new added store
-const { storeStoreRoutes } = required("./routes/stores/store");
+const { storeStoreRoutes } = require("./routes/stores/store");
 require("dotenv").config();
 
 app.use(cors());
