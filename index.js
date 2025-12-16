@@ -22,7 +22,8 @@ const { masterStatusRoutes } = require("./routes/masters/status");
 const {
   masterFeasibilityTypeRoutes,
 } = require("./routes/masters/feasibilitytype");
-
+//new added store
+const { storeStoreRoutes } = required("./routes/stores/store");
 require("dotenv").config();
 
 app.use(cors());
@@ -47,6 +48,8 @@ app.use(
   masterStatusRoutes,
   masterFeasibilityTypeRoutes
 );
+
+app.use("/stores", storeStoreRoutes);
 
 app.use("/userRights", userRightsRoutes);
 app.post("/api/draft_insert", authenticateToken, writeSrfDraft);

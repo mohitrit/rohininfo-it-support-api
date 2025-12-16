@@ -2,7 +2,7 @@ const sql = require("mssql");
 const { config } = require("../../config/config");
 const asyncHandler = require("express-async-handler");
 
-exports.usp_Stores_Browse = asyncHandler(async (req, res) => {
+exports.usp_Store_Browse = asyncHandler(async (req, res) => {
   try {
     await sql
       .connect(config)
@@ -10,10 +10,10 @@ exports.usp_Stores_Browse = asyncHandler(async (req, res) => {
         return pool
           .request()
           .input("SearchTerm", req.body.filter_value)
-          .execute("usp_Stores_Browse");
+          .execute("usp_Store_Browse");
       })
       .then((result) => {
-        console.log("usp_Stores_Browse ✅✅ => ", result);
+        console.log("usp_Store_Browse ✅✅ => ", result);
         res.send({
           status: 200,
           data: result.recordset,
@@ -21,7 +21,7 @@ exports.usp_Stores_Browse = asyncHandler(async (req, res) => {
         });
       })
       .catch((err) => {
-        console.log("usp_Stores_Browse ❌❌ => ", err);
+        console.log("usp_Store_Browse ❌❌ => ", err);
         res.send({
           status: 400,
           message: err,
@@ -114,7 +114,7 @@ exports.usp_Store_Preview = asyncHandler(async (req, res) => {
   }
 });
 
-exports.usp_Stores_Delete = asyncHandler(async (req, res) => {
+exports.usp_Store_Delete = asyncHandler(async (req, res) => {
   try {
     await sql
       .connect(config)
@@ -122,10 +122,10 @@ exports.usp_Stores_Delete = asyncHandler(async (req, res) => {
         return pool
           .request()
           .input("StoresID", req.body.store_id)
-          .execute("usp_Stores_Delete");
+          .execute("usp_Store_Delete");
       })
       .then((result) => {
-        console.log("usp_Stores_Delete ✅✅ => ", result);
+        console.log("usp_Store_Delete ✅✅ => ", result);
         res.send({
           status: 200,
           message: "Store deleted successfully",
@@ -133,7 +133,7 @@ exports.usp_Stores_Delete = asyncHandler(async (req, res) => {
         });
       })
       .catch((err) => {
-        console.log("usp_Stores_Delete ❌❌ => ", err);
+        console.log("usp_Store_Delete ❌❌ => ", err);
         res.send({
           status: 400,
           message: err,
