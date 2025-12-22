@@ -35,52 +35,50 @@ exports.usp_Stores_Browse = asyncHandler(async (req, res) => {
   }
 });
 
-exports.usp_Store_Save = asyncHandler(async (req, res) => {
+exports.usp_Stores_Save = asyncHandler(async (req, res) => {
   try {
-    await sql
-      .connect(config)
-      .then((pool) => {
-        return pool
-          .request()
-          .input("StoresID", req.body.store_id)
-          .input("ReceivedDate", req.body.received_date)
-          .input("StoreCode", req.body.store_code)
-          .input("Brand", req.body.brand)
-          .input("StoreStatus", req.body.store_status)
-          .input("Address", req.body.address)
-          .input("City", req.body.city)
-          .input("State", req.body.state)
-          .input("GoogleLocation", req.body.google_location)
-          .input("LCName", req.body.lc_name)
-          .input("LCContact", req.body.lc_contact)
-          .input("AMName", req.body.area_manager_name)
-          .input("AMContact", req.body.area_manager_contact)
-          .input("FeasibilityType", req.body.feasibility_type)
-          .execute("usp_Stores_Save");
-      })
-      .then((result) => {
-        console.log("usp_Stores_Save ✅✅ => ", result);
-        res.send({
-          status: 200,
-          data: result.recordset[0],
-          valid: true,
-        });
-      })
-      .catch((err) => {
-        console.log("usp_Stores_Save ❌❌ => ", err);
-        res.send({
-          status: 400,
-          message: err,
-        });
-      });
-  } catch (error) {
-    res.status(500).send({
-      status: 500,
-      message: error,
+    // Connection Pool setup
+    const pool = await sql.connect(config);
+    
+    const result = await pool.request()
+      .input("StoreID", sql.Int, req.body.store_id || 0)
+      .input("ReceivedDate", sql.Date, req.body.received_date)
+      .input("StoreCode", sql.VarChar, req.body.store_code)      
+      .input("BrandID", sql.Int, (req.body.brand_id == null || req.body.brand_id === "" || req.body.brand_id == 0) 
+    ? 1  // Yahan wo ID likhein jo aapke 'Brands' table mein default/Dummy brand ki hai
+    : parseInt(req.body.brand_id)
+)      .input("StoreStatus", sql.VarChar, req.body.store_status)
+      .input("Address", sql.VarChar, req.body.address)
+      .input("City", sql.VarChar, req.body.city)
+      .input("StateID", sql.Int, parseInt(req.body.state_id))
+      .input("GoogleLocation", sql.VarChar, req.body.google_location || null)
+      .input("LCName", sql.VarChar, req.body.lc_name)
+      .input("LCContact", sql.VarChar, req.body.lc_contact)
+      .input("AreaManagerName", sql.VarChar, req.body.area_manager_name)
+      .input("AreaManagerContact", sql.VarChar, req.body.area_manager_contact)
+      .input("FeasibilityTypeID", sql.Int, parseInt(req.body.feasibility_type_id))
+      .input("IsActive", sql.Bit, req.body.isActive ?? true)
+      .input("CreatedBy", sql.Int, req.body.user_id || 1)
+      .execute("usp_Stores_Save");
+
+    console.log("usp_Stores_Save ✅ => Success");
+
+    res.status(200).send({
+      status: 200,
+      data: result.recordset ? result.recordset[0] : null,
+      valid: true,
+      message: "Store saved successfully"
+    });
+
+  } catch (err) {
+    console.error("usp_Stores_Save ❌ => ", err.message);
+    res.status(400).send({
+      status: 400,
+      message: err.message || "Database Error",
+      valid: false
     });
   }
 });
-
 exports.usp_Stores_Preview = asyncHandler(async (req, res) => {
   try {
     await sql
