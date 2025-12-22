@@ -90,7 +90,7 @@ exports.usp_Stores_Preview = asyncHandler(async (req, res) => {
       .then((pool) => {
         return pool
           .request()
-          .input("StoresID", req.body.store_id)
+          .input("StoreID", req.body.store_id)
           .execute("usp_Stores_Preview");
       })
       .then((result) => {
@@ -123,7 +123,7 @@ exports.usp_Stores_Delete = asyncHandler(async (req, res) => {
       .then((pool) => {
         return pool
           .request()
-          .input("StoresID", req.body.store_id)
+          .input("StoreID", req.body.store_id)
           .execute("usp_Stores_Delete");
       })
       .then((result) => {
