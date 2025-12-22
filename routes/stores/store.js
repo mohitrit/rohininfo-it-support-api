@@ -1,16 +1,16 @@
 const { authenticateToken } = require("../../authentication/auth");
 const {
-  usp_Store_Save,
-  usp_Store_Browse,
-  usp_Store_Preview,
-  usp_Store_Delete,
+  usp_Stores_Save,
+  usp_Stores_Browse,
+  usp_Stores_Preview,
+  usp_Stores_Delete,
 } = require("../../controller/Stores/store");
 
 const storeStoreRoutes = require("express").Router();
 
-storeStoreRoutes.post("/usp_Store_Save", usp_Store_Save);
-storeStoreRoutes.post("/usp_Store_Browse", usp_Store_Browse);
-storeStoreRoutes.post("/usp_Store_Preview", usp_Store_Preview);
-storeStoreRoutes.post("/usp_Store_Delete", usp_Store_Delete);
+storeStoreRoutes.post("/usp_Stores_Save", usp_Stores_Save);
+storeStoreRoutes.post("/usp_Stores_Browse", usp_Stores_Browse);
+storeStoreRoutes.post("/usp_Stores_Preview", usp_Stores_Preview);
+storeStoreRoutes.post("/usp_Stores_Delete", usp_Stores_Delete);
 
 module.exports = { storeStoreRoutes };
