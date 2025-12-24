@@ -37,60 +37,31 @@ exports.usp_Stores_Browse = asyncHandler(async (req, res) => {
 
 exports.usp_Stores_Save = asyncHandler(async (req, res) => {
   try {
-    // Connection Pool setup
-    const pool = await sql.connect(config);
-    
-    const result = await pool.request()
-      .input("StoreID", sql.Int, req.body.store_id || 0)
-      .input("ReceivedDate", sql.Date, req.body.received_date)
-      .input("StoreCode", sql.VarChar, req.body.store_code)      
-      .input("BrandID", sql.Int, (req.body.brand_id == null || req.body.brand_id === "" || req.body.brand_id == 0) 
-    ? 1  // Yahan wo ID likhein jo aapke 'Brands' table mein default/Dummy brand ki hai
-    : parseInt(req.body.brand_id)
-)      .input("StoreStatus", sql.VarChar, req.body.store_status)
-      .input("Address", sql.VarChar, req.body.address)
-      .input("City", sql.VarChar, req.body.city)
-      .input("StateID", sql.Int, parseInt(req.body.state_id))
-      .input("GoogleLocation", sql.VarChar, req.body.google_location || null)
-      .input("LCName", sql.VarChar, req.body.lc_name)
-      .input("LCContact", sql.VarChar, req.body.lc_contact)
-      .input("AreaManagerName", sql.VarChar, req.body.area_manager_name)
-      .input("AreaManagerContact", sql.VarChar, req.body.area_manager_contact)
-      .input("FeasibilityTypeID", sql.Int, parseInt(req.body.feasibility_type_id))
-      .input("IsActive", sql.Bit, req.body.isActive ?? true)
-      .input("CreatedBy", sql.Int, req.body.user_id || 1)
-      .execute("usp_Stores_Save");
-
-    console.log("usp_Stores_Save ✅ => Success");
-
-    res.status(200).send({
-      status: 200,
-      data: result.recordset ? result.recordset[0] : null,
-      valid: true,
-      message: "Store saved successfully"
-    });
-
-  } catch (err) {
-    console.error("usp_Stores_Save ❌ => ", err.message);
-    res.status(400).send({
-      status: 400,
-      message: err.message || "Database Error",
-      valid: false
-    });
-  }
-});
-exports.usp_Stores_Preview = asyncHandler(async (req, res) => {
-  try {
     await sql
       .connect(config)
       .then((pool) => {
         return pool
           .request()
           .input("StoreID", req.body.store_id)
-          .execute("usp_Stores_Preview");
+          .input("ReceivedDate", req.body.received_date)
+          .input("StoreCode", req.body.store_code)
+          .input("BrandID", req.body.brand_id)
+          .input("StoreStatus", req.body.store_status)
+          .input("Address", req.body.address)
+          .input("City", req.body.city)
+          .input("StateID", req.body.state_id)
+          .input("GoogleLocation", req.body.google_location)
+          .input("LCName", req.body.lc_name)
+          .input("LCContact", req.body.lc_contact)
+          .input("AreaManagerName", req.body.area_manager_name)
+          .input("AreaManagerContact", req.body.area_manager_contact)
+          .input("FeasibilityTypeID", req.body.feasibility_type_id)
+          .input("IsActive", req.body.isActive)
+          .input("CreatedBy", req.body.user_id)
+          .execute("usp_Stores_Save");
       })
       .then((result) => {
-        console.log("usp_Stores_Preview ✅✅ => ", result);
+        console.log("usp_Stores_Save ✅✅ => ", result);
         res.send({
           status: 200,
           data: result.recordset[0],
@@ -98,7 +69,7 @@ exports.usp_Stores_Preview = asyncHandler(async (req, res) => {
         });
       })
       .catch((err) => {
-        console.log("usp_Stores_Preview ❌❌ => ", err);
+        console.log("usp_Stores_Save ❌❌ => ", err);
         res.send({
           status: 400,
           message: err,
@@ -112,35 +83,179 @@ exports.usp_Stores_Preview = asyncHandler(async (req, res) => {
   }
 });
 
-exports.usp_Stores_Delete = asyncHandler(async (req, res) => {
-  try {
-    await sql
-      .connect(config)
-      .then((pool) => {
-        return pool
-          .request()
-          .input("StoreID", req.body.store_id)
-          .execute("usp_Stores_Delete");
-      })
-      .then((result) => {
-        console.log("usp_Stores_Delete ✅✅ => ", result);
-        res.send({
-          status: 200,
-          message: "Store deleted successfully",
-          valid: true,
+// exports.usp_Stores_Preview = asyncHandler(async (req, res) => {
+//   try {
+//     await sql
+//       .connect(config)
+//       .then((pool) => {
+//         return pool
+//           .request()
+//           .input("StoresID", req.body.store_id)
+//           .execute("usp_Stores_Preview");
+//       })
+//       .then((result) => {
+//         console.log("usp_Stores_Preview ✅✅ => ", result);
+//         res.send({
+//           status: 200,
+//           data: result.recordset[0],
+//           valid: true,
+//         });
+//       })
+//       .catch((err) => {
+//         console.log("usp_Stores_Preview ❌❌ => ", err);
+//         res.send({
+//           status: 400,
+//           message: err,
+//         });
+//       });
+//   } catch (error) {
+//     res.status(500).send({
+//       status: 500,
+//       message: error,
+//     });
+//   }
+// });
+exports.usp_Stores_Preview = asyncHandler(async (req, res) => {
+    try {
+        await sql
+            .connect(config)
+            .then((pool) => {
+                return pool
+                    .request()
+                    .input("StoreID", req.body.store_id)  
+                    .execute("usp_Stores_Preview");
+            })
+            .then((result) => {
+                console.log("usp_Stores_Preview ✅✅ => ", result);
+                res.send({
+                    status: 200,
+                    data: result.recordset[0],
+                    valid: true,
+                });
+            })
+            .catch((err) => {
+                console.log("usp_Stores_Preview ❌❌ => ", err);
+                res.send({
+                    status: 400,
+                    message: err.message || err,
+                    valid: false,
+                });
+            });
+    } catch (error) {
+        res.status(500).send({
+            status: 500,
+            message: error.message || error,
+            valid: false,
         });
-      })
-      .catch((err) => {
-        console.log("usp_Stores_Delete ❌❌ => ", err);
-        res.send({
-          status: 400,
-          message: err,
-        });
-      });
-  } catch (error) {
-    res.status(500).send({
-      status: 500,
-      message: error,
-    });
-  }
+    }
 });
+
+
+// exports.usp_Stores_Delete = asyncHandler(async (req, res) => {
+//   try {
+//     await sql
+//       .connect(config)
+//       .then((pool) => {
+//         return pool
+//           .request()
+//           .input("StoresID", req.body.store_id)
+//           .execute("usp_Stores_Delete");
+//       })
+//       .then((result) => {
+//         console.log("usp_Stores_Delete ✅✅ => ", result);
+//         res.send({
+//           status: 200,
+//           message: "Store deleted successfully",
+//           valid: true,
+//         });
+//       })
+//       .catch((err) => {
+//         console.log("usp_Stores_Delete ❌❌ => ", err);
+//         res.send({
+//           status: 400,
+//           message: err,
+//         });
+//       });
+//   } catch (error) {
+//     res.status(500).send({
+//       status: 500,
+//       message: error,
+//     });
+//   }
+// });
+
+
+exports.usp_Stores_Delete = asyncHandler(async (req, res) => {
+    try {
+        await sql
+            .connect(config)
+            .then((pool) => {
+                return pool
+                    .request()
+                    .input("StoreID", sql.Int, Number(req.body.store_id))
+                    .execute("usp_Stores_Delete");
+            })
+            .then((result) => {
+                console.log("usp_Stores_Delete ✅✅ => ", result);
+                res.send({
+                    status: 200,
+                    message: "Store deleted successfully",
+                    valid: true,
+                });
+            })
+            .catch((err) => {
+                console.log("usp_Stores_Delete ❌❌ => ", err);
+                res.send({
+                    status: 400,
+                    message: err.message || err,
+                    valid: false,
+                });
+            });
+    } catch (error) {
+        res.status(500).send({
+            status: 500,
+            message: error.message || error,
+        });
+    }
+});
+
+
+exports.usp_list_Brand = asyncHandler(async (req, res) => {
+    try {
+        await sql
+            .connect(config)
+            .then((pool) => {
+                return pool.request().execute("usp_list_Brand");
+            })
+            .then((result) => {
+                console.log("usp_list_Brand ✅✅ => ", result.recordset.length, "brands");
+                
+                const brands = result.recordset.map(brand => ({
+                    brand_id: brand.BrandID,
+                    brand_name: brand.BrandName
+                }));
+
+                res.send({
+                    status: 200,
+                    data: brands,  
+                    valid: true,
+                });
+            })
+            .catch((err) => {
+                console.log("usp_list_Brand ❌❌ => ", err);
+                res.send({
+                    status: 400,
+                    message: err.message || "Failed to fetch brands",
+                    valid: false,  
+                });
+            });
+    } catch (error) {
+        console.error("usp_list_Brand ERROR:", error);
+        res.status(500).send({
+            status: 500,
+            message: "Server error",
+            valid: false,
+        });
+    }
+});
+
