@@ -41,7 +41,7 @@ exports.usp_Vendor_Save = asyncHandler(async (req, res) => {
         const result = await pool.request()
             .input("VendorID", sql.Int, Number(req.body.vendor_id) || 0)
             .input("VendorName", sql.VarChar, req.body.vendor_name)
-            .input("ISPID", sql.Int, Number(req.body.isp_id) || null) // 🔥 Convert to Number
+            .input("ISPID", sql.Int, Number(req.body.ISPID) || null) 
             .input("ContactPerson", sql.VarChar, req.body.contact_person)
             .input("Mobile", sql.VarChar, req.body.mobile)
             .input("Email", sql.VarChar, req.body.email) // 🔥 Frontend se email aana chahiye
@@ -172,49 +172,70 @@ exports.usp_list_ISP = asyncHandler(async (req, res) => {
     }
 });
 
+// exports.usp_list_PIN = asyncHandler(async (req, res) => {
+//     try {
+//         const searchQuery = req.query.search || req.body.search || ""; 
+
+       
+//         if (searchQuery === "") {
+//             return res.send({
+//                 status: 200,
+//                 data: [],
+//                 valid: true,
+//                 message: "Please enter a PIN to search"
+//             });
+//         }
+
+//         const pool = await sql.connect(config);
+//         const result = await pool.request()
+//             .input("search", sql.NVarChar(100), searchQuery) 
+//             .execute("usp_list_PIN");
+
+//         console.log("usp_list_PIN ✅✅ => ", result.recordset.length, "items");
+
+//         const pinList = result.recordset.map(item => ({
+//             pin_id: item.PinID,
+//             pin_code: item.PIN,  
+//             city: item.city,
+//             district: item.District,
+//             state: item.state
+//         }));
+
+//         res.send({
+//             status: 200,
+//             data: pinList,
+//             valid: true,
+//         });
+
+//     } catch (error) {
+//         console.error("usp_list_PIN ERROR:", error);
+//         res.status(500).send({
+//             status: 500,
+//             message: "Server error",
+//             valid: false,
+//         });
+//     }
+// });
 exports.usp_list_PIN = asyncHandler(async (req, res) => {
-    try {
-        
-        const searchQuery = req.query.search || req.body.search || ""; 
+	try {
+		console.log("REQ BODY =>", req.body);
 
-        await sql
-            .connect(config)
-            .then((pool) => {
-                return pool.request()
-                    .input("search", sql.NVarChar(100), searchQuery) 
-                    .execute("usp_list_PIN");
-            })
-            .then((result) => {
-                console.log("usp_list_PIN ✅✅ => ", result.recordset.length, "items");
+		const pool = await sql.connect(config);
 
-                const pinList = result.recordset.map(item => ({
-                    pin_id: item.PinID,
-                    pin_code: item.PIN,  
-                    city: item.city,
-                    district: item.District,
-                    state: item.state
-                }));
+		const result = await pool
+			.request()
+			.input("search", sql.NVarChar(20), req.body.search)
+			.execute("usp_list_PIN");
 
-                res.send({
-                    status: 200,
-                    data: pinList,
-                    valid: true,
-                });
-            })
-            .catch((err) => {
-                console.log("usp_list_PIN ❌❌ => ", err);
-                res.status(400).send({
-                    status: 400,
-                    message: err.message || "Failed to fetch PIN list",
-                    valid: false,
-                });
-            });
-    } catch (error) {
-        console.error("usp_list_PIN ERROR:", error);
-        res.status(500).send({
-            status: 500,
-            message: "Server error",
-            valid: false,
-        });
-    }
+		console.log("RECORDSET =>", result.recordset);
+
+		res.send({
+			status: 200,
+			data: result.recordset,
+		});
+	} catch (err) {
+		console.log("ERROR =>", err);
+		res.status(500).send({ error: err.message });
+	}
 });
+
